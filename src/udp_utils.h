@@ -16,6 +16,9 @@ namespace udpUtils {
     extern const byte A2S_PLAYER_RES_HEADER;
     extern const byte A2S_INFO_RES_HEADER;
 
+    extern byte MaxPlayers;
+    extern byte PlayersOffset;
+
     void sendQuery(byte query[], size_t querySize);
     bool checkForInfoResponse();
     bool checkForPlayerResponse();

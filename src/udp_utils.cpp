@@ -21,6 +21,9 @@ namespace udpUtils {
     const byte A2S_PLAYER_RES_HEADER  = 0x44;
     const byte A2S_INFO_RES_HEADER  = 0x49;
 
+    byte MaxPlayers;
+    byte PlayersOffset;
+
 
     void sendQuery(byte query[], size_t querySize) {
         Serial.println("Sending query...");
@@ -137,13 +140,13 @@ namespace udpUtils {
         display.setTextDatum(TL_DATUM);
         display.setFreeFont(FMB9);
         strncpy(smallBuffer, buffer + index, 128);
-        int textWidth = display.drawString("Players: ", 24, 72);
+        PlayersOffset = display.drawString("Players: ", 24, 72);
 
         display.setFreeFont(FM9);
         byte players = buffer[index++];
-        byte maxPlayers = buffer[index++];
-        std::string playersStr = std::to_string(players) + "/" + std::to_string(maxPlayers);
-        display.drawString(playersStr.c_str(), 24 + textWidth, 72);
+        MaxPlayers = buffer[index++];
+        std::string playersStr = std::to_string(players) + "/" + std::to_string(MaxPlayers);
+        display.drawString(playersStr.c_str(), 24 + PlayersOffset, 72);
     }
 
     void parsePlayerInfo(char* buffer, int length) {
@@ -158,7 +161,8 @@ namespace udpUtils {
 
         if (numPlayers == 0) return;
 
-        for (byte i = 0; i < numPlayers; i++) {
+        byte i;
+        for (i = 0; i < numPlayers; i++) {
             // Index
             index++;
 
@@ -172,11 +176,26 @@ namespace udpUtils {
             // Player Duration
             index += 4;
 
-            if (*playerName == '\0') return;
+            if (*playerName == '\0') {
+                --i;
+                break;
+            }
 
             char buffer[64];
-            snprintf(buffer, sizeof(buffer), "%2d. %s", i + 1, playerName);
+            snprintf(buffer, sizeof(buffer), "%2d. %-30s", i + 1, playerName);
             display.drawString(buffer, 24, 100 + i * 20);
         }
+
+        byte players = i;
+
+        for (; i < 12; i++) {
+            char buffer[32];
+            snprintf(buffer, sizeof(buffer), "%-30s", " ");
+            display.drawString(buffer, 24, 100 + i * 20);
+        }
+        
+        display.setFreeFont(FM9);
+        std::string playersStr = std::to_string(players) + "/" + std::to_string(MaxPlayers) + "    ";
+        display.drawString(playersStr.c_str(), 24 + PlayersOffset, 72);
     }
 }
