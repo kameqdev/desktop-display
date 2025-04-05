@@ -12,8 +12,6 @@ namespace displayModes {
     long long lastDrawTime;
 
     const char* ntpServer = "pool.ntp.org";
-    const long  gmtOffset_sec = 3600 * 1;
-    const int   daylightOffset_sec = 3600 * 0;
 
     void digitalClockInit() {
         lastDrawTime = -1000;
@@ -28,8 +26,16 @@ namespace displayModes {
 
         struct tm timeinfo;
         if (!getLocalTime(&timeinfo)) {
-            display.println("Failed to obtain time");
+            // display.println("Failed to obtain time");
             return;
+        }
+
+        // Adjust for GMT offset
+        timeinfo.tm_hour += 1;
+
+        // Adjust for daylight saving time
+        if (timeinfo.tm_isdst > 0) {
+            timeinfo.tm_hour -= 1;
         }
 
         char timeStringBuffer[9];
