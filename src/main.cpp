@@ -10,7 +10,7 @@ using namespace displayModes;
 
 
 byte displayState = 0;
-void (*states[][2])() = { { digitalClockInit, digitalClock }, { gmodServerDataInit, gmodServerData } };
+void (*states[][2])() = { { digitalClockInit, digitalClock } };
 
 
 void switchState() {

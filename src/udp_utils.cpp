@@ -190,7 +190,7 @@ namespace udpUtils {
 
         for (; i < 12; i++) {
             char buffer[32];
-            snprintf(buffer, sizeof(buffer), "%-30s", " ");
+            snprintf(buffer, sizeof(buffer), "%30s", " ");
             display.drawString(buffer, 24, 100 + i * 20);
         }
         
