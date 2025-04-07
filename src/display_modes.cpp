@@ -28,6 +28,14 @@ namespace displayModes {
             return;
         }
 
+        // Adjust for GMT offset
+        timeinfo.tm_hour += 1;
+
+        // Adjust for daylight saving time
+        if (timeinfo.tm_isdst > 0) {
+            timeinfo.tm_hour -= 1;
+        }
+
         char timeStringBuffer[9];
         strftime(timeStringBuffer, sizeof(timeStringBuffer), "%H:%M:%S", &timeinfo);
 
