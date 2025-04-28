@@ -3,3 +3,4 @@ Project including TFT SPI LCD and ESP32 to display some information based on cho
 
 ## Setup
 - .pio\libdeps\esp32dev\TFT_eSPI\User_Setup.h
+- src\secrets.h
